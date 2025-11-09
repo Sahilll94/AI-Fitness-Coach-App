@@ -1,0 +1,36 @@
+{
+  "name": "ai-fitness-coach-app",
+  "version": "1.0.0",
+  "description": "An AI-powered fitness assistant that generates personalized workout and diet plans",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postman-test": "echo 'Test endpoints using Postman - Backend APIs are ready on http://localhost:3000/api'"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.16",
+    "axios": "^1.6.0",
+    "clsx": "^2.0.0",
+    "dotenv": "^16.3.1",
+    "framer-motion": "^10.16.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.3",
+    "lucide-react": "^0.292.0",
+    "next": "^14.0.0",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.52.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.2.0"
+  }
+}
