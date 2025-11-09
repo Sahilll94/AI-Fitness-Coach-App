@@ -1238,5 +1238,6 @@ For issues, questions, or feature requests:
 **Built with ❤️ using Next.js, React, and AI**
 
 Last Updated: November 9, 2025
-#   A I - F i t n e s s - C o a c h - A p p  
+#   A I - F i t n e s s - C o a c h - A p p 
+ 
  
