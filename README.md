@@ -88,15 +88,3 @@ Then visit 👉 [http://localhost:3000](http://localhost:3000)
 
 **Built with ❤️ using Next.js, Gemini, ElevenLabs & Replicate.**
 
-```
-
----
-
-### ✅ Why this version works for your submission
-- Fits perfectly for **company review** (they’ll scan in <1 min).
-- Covers all **task.md deliverables**.
-- Cleanly formatted for GitHub.
-- Ready for Vercel deployment.
-
-Would you like me to tailor this same README for your **final submission folder (with video + live link placeholders)** format too?
-```
