@@ -5,6 +5,9 @@ import '@/styles/globals.css';
 export const metadata: Metadata = {
   title: 'FitCoach AI - Your Personal Fitness Coach',
   description: 'AI-powered fitness coaching with personalized plans, voice guidance, and more',
+  icons: {
+    icon: '/favicon.png',
+  },
 };
 
 export default function RootLayout({

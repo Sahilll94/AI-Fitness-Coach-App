@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useTheme } from '@/context/ThemeContext';
 import { FitnessPlan } from '@/types';
 import jsPDF from 'jspdf';
+import { Moon, Sun, ArrowLeft } from 'lucide-react';
 
 export default function ResultsPage() {
   const { isDark, toggleTheme } = useTheme();
@@ -285,68 +287,126 @@ export default function ResultsPage() {
 
   if (!plan) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">No Plan Found</h1>
-          <a href="/app" className="btn-primary px-6 py-2">
+      <div style={{ minHeight: '100vh', backgroundColor: isDark ? '#0f172a' : '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1rem' }}>No Plan Found</h1>
+          <Link href="/app" style={{ 
+            display: 'inline-block',
+            backgroundColor: '#2563eb',
+            color: '#ffffff',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '0.375rem',
+            textDecoration: 'none',
+            fontWeight: '500',
+            transition: 'background-color 0.3s'
+          }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}>
             Create a New Plan
-          </a>
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800 py-10">
-      <div className="container max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <a href="/app" className="text-primary text-xl font-bold">← New Plan</a>
+    <div style={{ minHeight: '100vh', backgroundColor: isDark ? '#0f172a' : '#ffffff' }}>
+      {/* Fixed Navigation */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        borderBottom: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
+        backgroundColor: isDark ? '#0f172a' : '#ffffff',
+        zIndex: 40,
+        padding: '1rem 0'
+      }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Link href="/app" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#2563eb', textDecoration: 'none', fontWeight: '500', transition: 'opacity 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>
+              <ArrowLeft size={20} />
+              <span>Back</span>
+            </Link>
+            <Link href="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', color: isDark ? '#ffffff' : '#000000', textDecoration: 'none', transition: 'opacity 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>
+              AI Fitness Coach
+            </Link>
+          </div>
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-lg bg-white dark:bg-slate-700"
+            style={{
+              padding: '0.5rem',
+              borderRadius: '0.375rem',
+              border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
+              backgroundColor: isDark ? '#1e293b' : '#f3f4f6',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? '#334155' : '#e5e7eb'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isDark ? '#1e293b' : '#f3f4f6'}
           >
-            {isDark ? '☀️' : '🌙'}
+            {isDark ? <Sun size={20} color="#fbbf24" /> : <Moon size={20} color="#374151" />}
           </button>
         </div>
+      </div>
 
+      {/* Main Content */}
+      <div style={{ paddingTop: '5rem', paddingBottom: '2.5rem' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
         {/* User Info Card */}
-        <div className="card mb-8">
-          <h1 className="text-3xl font-bold mb-4 text-primary">
+        <div style={{
+          marginBottom: '2rem',
+          padding: '2rem',
+          border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
+          borderRadius: '0.375rem'
+        }}>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1rem', color: isDark ? '#ffffff' : '#000000' }}>
             Your Personalized Fitness Plan
           </h1>
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', fontSize: '0.875rem' }}>
             <div>
-              <p className="font-semibold">Name:</p>
-              <p>{plan.userProfile.name}</p>
+              <p style={{ fontWeight: '600', marginBottom: '0.25rem', color: isDark ? '#e2e8f0' : '#374151' }}>Name:</p>
+              <p style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{plan.userProfile.name}</p>
             </div>
             <div>
-              <p className="font-semibold">Goal:</p>
-              <p>{plan.userProfile.fitnessGoal}</p>
+              <p style={{ fontWeight: '600', marginBottom: '0.25rem', color: isDark ? '#e2e8f0' : '#374151' }}>Goal:</p>
+              <p style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{plan.userProfile.fitnessGoal}</p>
             </div>
             <div>
-              <p className="font-semibold">Level:</p>
-              <p>{plan.userProfile.fitnessLevel}</p>
+              <p style={{ fontWeight: '600', marginBottom: '0.25rem', color: isDark ? '#e2e8f0' : '#374151' }}>Level:</p>
+              <p style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{plan.userProfile.fitnessLevel}</p>
             </div>
             <div>
-              <p className="font-semibold">Location:</p>
-              <p>{plan.userProfile.workoutLocation}</p>
+              <p style={{ fontWeight: '600', marginBottom: '0.25rem', color: isDark ? '#e2e8f0' : '#374151' }}>Location:</p>
+              <p style={{ color: isDark ? '#cbd5e1' : '#6b7280' }}>{plan.userProfile.workoutLocation}</p>
             </div>
           </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="card mb-8">
-          <div className="flex gap-4 border-b border-gray-300 dark:border-gray-600 mb-6">
+        <div style={{
+          marginBottom: '2rem',
+          padding: '2rem',
+          border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`,
+          borderRadius: '0.375rem'
+        }}>
+          <div style={{ display: 'flex', gap: '1rem', borderBottom: `1px solid ${isDark ? '#475569' : '#d1d5db'}`, marginBottom: '1.5rem', overflowX: 'auto' }}>
             {(['workout', 'diet', 'tips', 'quote'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 font-semibold transition-all border-b-2 ${
-                  activeTab === tab
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-gray-600 dark:text-gray-400'
-                }`}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontWeight: '600',
+                  transition: 'all 0.3s',
+                  borderBottom: activeTab === tab ? '2px solid #2563eb' : '2px solid transparent',
+                  color: activeTab === tab ? '#2563eb' : isDark ? '#9ca3af' : '#6b7280',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9375rem'
+                }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
@@ -354,12 +414,17 @@ export default function ResultsPage() {
           </div>
 
           {/* Tab Content */}
-          <div className="mb-6">
+          <div style={{ marginBottom: '1.5rem' }}>
             {activeTab === 'workout' && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-primary">Workout Plan</h2>
-                <div className="bg-blue-50 dark:bg-slate-700/30 p-6 rounded-lg border border-blue-200 dark:border-slate-600 space-y-3">
-                  <div className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: isDark ? '#ffffff' : '#000000' }}>Workout Plan</h2>
+                <div style={{ 
+                  backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+                  padding: '1.5rem',
+                  borderRadius: '0.375rem',
+                  border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`
+                }}>
+                  <div style={{ color: isDark ? '#cbd5e1' : '#6b7280', fontSize: '0.9375rem', lineHeight: '1.6' }}>
                     {plan.workoutPlan.split('\n').map((line: string, index: number) => {
                       const trimmed = line.trim();
                       if (!trimmed) return <br key={index} />;
@@ -368,7 +433,7 @@ export default function ResultsPage() {
                       if (trimmed.match(/^\*?(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/i)) {
                         const dayName = trimmed.replace(/^\*+/, '').replace(/\*+$/, '').trim();
                         return (
-                          <h4 key={index} className="font-bold text-lg text-primary mt-5 mb-3 pb-2 border-b-2 border-primary/30">
+                          <h4 key={index} style={{ fontWeight: 'bold', fontSize: '1rem', color: '#2563eb', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '2px solid rgba(37, 99, 235, 0.3)' }}>
                             {dayName}
                           </h4>
                         );
@@ -378,8 +443,8 @@ export default function ResultsPage() {
                       if (line.includes(':') && !line.startsWith('*')) {
                         const parts = line.split(':');
                         return (
-                          <p key={index} className="font-semibold text-gray-800 dark:text-gray-200 my-2 ml-4">
-                            <span className="text-primary">•</span> {parts[0].trim()}: <span className="font-normal">{parts.slice(1).join(':').trim()}</span>
+                          <p key={index} style={{ fontWeight: '600', color: isDark ? '#e2e8f0' : '#374151', margin: '0.5rem 0', marginLeft: '1rem' }}>
+                            <span style={{ color: '#2563eb' }}>•</span> {parts[0].trim()}: <span style={{ fontWeight: 'normal' }}>{parts.slice(1).join(':').trim()}</span>
                           </p>
                         );
                       }
@@ -387,7 +452,7 @@ export default function ResultsPage() {
                       // Style circuit/section headers
                       if (trimmed.toLowerCase().includes('circuit') || trimmed.match(/^Complete \d+ rounds/i)) {
                         return (
-                          <p key={index} className="font-semibold text-primary my-3 mt-4">
+                          <p key={index} style={{ fontWeight: '600', color: '#2563eb', margin: '0.75rem 0', marginTop: '1rem' }}>
                             {trimmed}
                           </p>
                         );
@@ -396,7 +461,7 @@ export default function ResultsPage() {
                       // Circuit items (indented with *)
                       if (trimmed.startsWith('*') && !trimmed.match(/^\*?(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/i)) {
                         return (
-                          <p key={index} className="ml-8 my-1 text-gray-700 dark:text-gray-300">
+                          <p key={index} style={{ marginLeft: '2rem', margin: '0.25rem 0', color: isDark ? '#cbd5e1' : '#6b7280' }}>
                             {trimmed.replace(/^\*/, '•')}
                           </p>
                         );
@@ -404,7 +469,7 @@ export default function ResultsPage() {
                       
                       // Regular text (intro, notes, etc.)
                       return (
-                        <p key={index} className="my-2 leading-relaxed italic text-gray-600 dark:text-gray-400">
+                        <p key={index} style={{ margin: '0.5rem 0', fontStyle: 'italic', color: isDark ? '#94a3b8' : '#9ca3af', lineHeight: '1.6' }}>
                           {trimmed}
                         </p>
                       );
@@ -416,9 +481,14 @@ export default function ResultsPage() {
             
             {activeTab === 'diet' && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-primary">Diet Plan</h2>
-                <div className="bg-green-50 dark:bg-slate-700/30 p-6 rounded-lg border border-green-200 dark:border-slate-600 space-y-3">
-                  <div className="prose prose-sm dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: isDark ? '#ffffff' : '#000000' }}>Diet Plan</h2>
+                <div style={{ 
+                  backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+                  padding: '1.5rem',
+                  borderRadius: '0.375rem',
+                  border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`
+                }}>
+                  <div style={{ color: isDark ? '#cbd5e1' : '#6b7280', fontSize: '0.9375rem', lineHeight: '1.6' }}>
                     {plan.dietPlan.split('\n').map((line: string, index: number) => {
                       const trimmed = line.trim();
                       if (!trimmed) return <br key={index} />;
@@ -431,7 +501,7 @@ export default function ResultsPage() {
                           .replace(/\*$/, '')
                           .trim();
                         return (
-                          <h4 key={index} className="font-bold text-lg text-green-600 dark:text-green-400 mt-5 mb-3 pb-2 border-b-2 border-green-300/50">
+                          <h4 key={index} style={{ fontWeight: 'bold', fontSize: '1rem', color: '#16a34a', marginTop: '1.25rem', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '2px solid rgba(22, 163, 74, 0.3)' }}>
                             {dayName}
                           </h4>
                         );
@@ -440,7 +510,7 @@ export default function ResultsPage() {
                       // Style meal headers (Breakfast:, Lunch:, Dinner:, Snacks:)
                       if (trimmed.match(/^(Breakfast|Lunch|Dinner|Snacks|Brunch):/i)) {
                         return (
-                          <p key={index} className="font-semibold text-green-700 dark:text-green-300 mt-3 mb-2 ml-4">
+                          <p key={index} style={{ fontWeight: '600', color: '#16a34a', marginTop: '0.75rem', marginBottom: '0.5rem', marginLeft: '1rem' }}>
                             {trimmed}
                           </p>
                         );
@@ -449,7 +519,7 @@ export default function ResultsPage() {
                       // Style food items (with bullets, dashes, or indented)
                       if (trimmed.match(/^[\•\-\*]/) || (line.startsWith('  ') && !trimmed.match(/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Day \d+)/i))) {
                         return (
-                          <p key={index} className="ml-8 my-1 text-gray-700 dark:text-gray-300 leading-relaxed">
+                          <p key={index} style={{ marginLeft: '2rem', margin: '0.25rem 0', color: isDark ? '#cbd5e1' : '#6b7280', lineHeight: '1.6' }}>
                             {trimmed.replace(/^[\•\-\*]\s*/, '• ')}
                           </p>
                         );
@@ -457,7 +527,7 @@ export default function ResultsPage() {
                       
                       // Regular text (intro, notes, calorie information)
                       return (
-                        <p key={index} className="my-2 leading-relaxed italic text-gray-600 dark:text-gray-400">
+                        <p key={index} style={{ margin: '0.5rem 0', fontStyle: 'italic', color: isDark ? '#94a3b8' : '#9ca3af', lineHeight: '1.6' }}>
                           {trimmed}
                         </p>
                       );
@@ -469,8 +539,8 @@ export default function ResultsPage() {
             
             {activeTab === 'tips' && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-primary">Fitness Tips</h2>
-                <div className="space-y-4">
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: isDark ? '#ffffff' : '#000000' }}>Fitness Tips</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {plan.tips.split('\n').map((line: string, index: number) => {
                     const trimmed = line.trim();
                     if (!trimmed) return null;
@@ -486,12 +556,17 @@ export default function ResultsPage() {
                         const description = content.substring(colonIndex + 1).trim();
                         
                         return (
-                          <div key={index} className="bg-amber-50 dark:bg-slate-700/50 p-5 rounded-lg border-l-4 border-amber-500">
-                            <p className="font-bold text-amber-700 dark:text-amber-300 text-lg mb-2">
+                          <div key={index} style={{
+                            backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+                            padding: '1.25rem',
+                            borderRadius: '0.375rem',
+                            borderLeft: '4px solid #f59e0b'
+                          }}>
+                            <p style={{ fontWeight: 'bold', color: '#d97706', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
                               {title}
                             </p>
                             {description && (
-                              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                              <p style={{ color: isDark ? '#cbd5e1' : '#6b7280', lineHeight: '1.6' }}>
                                 {description}
                               </p>
                             )}
@@ -513,12 +588,17 @@ export default function ResultsPage() {
                       const description = colonIndex !== -1 ? cleanTitle.substring(colonIndex + 1).trim() : '';
                       
                       return (
-                        <div key={index} className="bg-amber-50 dark:bg-slate-700/50 p-5 rounded-lg border-l-4 border-amber-500">
-                          <p className="font-bold text-amber-700 dark:text-amber-300 text-lg mb-2">
+                        <div key={index} style={{
+                          backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+                          padding: '1.25rem',
+                          borderRadius: '0.375rem',
+                          borderLeft: '4px solid #f59e0b'
+                        }}>
+                          <p style={{ fontWeight: 'bold', color: '#d97706', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
                             {title}
                           </p>
                           {description && (
-                            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            <p style={{ color: isDark ? '#cbd5e1' : '#6b7280', lineHeight: '1.6' }}>
                               {description}
                             </p>
                           )}
@@ -529,7 +609,14 @@ export default function ResultsPage() {
                     // Intro paragraph (lines that start with intro text)
                     if (trimmed.toLowerCase().includes('here are') || trimmed.toLowerCase().includes('tips')) {
                       return (
-                        <p key={index} className="italic text-gray-600 dark:text-gray-400 mb-4 p-4 bg-amber-50 dark:bg-slate-700/30 rounded-lg">
+                        <p key={index} style={{
+                          fontStyle: 'italic',
+                          color: isDark ? '#94a3b8' : '#9ca3af',
+                          marginBottom: '1rem',
+                          padding: '1rem',
+                          backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+                          borderRadius: '0.375rem'
+                        }}>
                           {trimmed}
                         </p>
                       );
@@ -537,7 +624,7 @@ export default function ResultsPage() {
                     
                     // Regular tip content (continuation of previous tip)
                     return (
-                      <p key={index} className="text-gray-700 dark:text-gray-300 leading-relaxed ml-2">
+                      <p key={index} style={{ color: isDark ? '#cbd5e1' : '#6b7280', lineHeight: '1.6', marginLeft: '0.5rem' }}>
                         {trimmed}
                       </p>
                     );
@@ -548,9 +635,21 @@ export default function ResultsPage() {
             
             {activeTab === 'quote' && (
               <div>
-                <h2 className="text-2xl font-semibold mb-6 text-primary">Motivation</h2>
-                <div className="bg-gradient-to-r from-purple-500/10 via-primary/10 to-blue-500/10 dark:from-purple-500/20 dark:via-primary/20 dark:to-blue-500/20 p-10 rounded-lg border-2 border-primary/50 shadow-lg">
-                  <p className="text-xl md:text-2xl italic text-center text-primary font-semibold leading-relaxed">
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '600', marginBottom: '1.5rem', color: isDark ? '#ffffff' : '#000000' }}>Motivation</h2>
+                <div style={{
+                  backgroundColor: isDark ? '#1e293b' : '#f3f4f6',
+                  padding: '2.5rem',
+                  borderRadius: '0.375rem',
+                  border: `2px solid ${isDark ? '#475569' : '#d1d5db'}`
+                }}>
+                  <p style={{
+                    fontSize: '1.25rem',
+                    fontStyle: 'italic',
+                    textAlign: 'center',
+                    color: '#2563eb',
+                    fontWeight: '600',
+                    lineHeight: '1.7'
+                  }}>
                     "{plan.motivationalQuote
                       .replace(/^"|"$/g, '')
                       .replace(/^\*\*|^\*|^""|^""/, '')
@@ -564,19 +663,46 @@ export default function ResultsPage() {
 
           {/* Generated Image */}
           {generatedImages[activeTab] && (
-            <div className="mb-6 bg-white dark:bg-slate-700/50 p-8 rounded-lg border-2 border-gray-200 dark:border-slate-600">
-              <h3 className="font-semibold text-lg mb-4">Generated Image</h3>
-              <div className="flex flex-col items-center">
+            <div style={{
+              marginBottom: '1.5rem',
+              backgroundColor: isDark ? '#1e293b' : '#f9fafb',
+              padding: '2rem',
+              borderRadius: '0.375rem',
+              border: `1px solid ${isDark ? '#334155' : '#e5e7eb'}`
+            }}>
+              <h3 style={{ fontWeight: '600', fontSize: '1.125rem', marginBottom: '1rem', color: isDark ? '#ffffff' : '#000000' }}>Generated Image</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img
                   src={generatedImages[activeTab]}
                   alt="Generated"
-                  className="w-full rounded-lg object-contain cursor-pointer hover:shadow-xl transition-shadow duration-300 max-h-full"
+                  style={{
+                    width: '100%',
+                    borderRadius: '0.375rem',
+                    objectFit: 'contain',
+                    cursor: 'pointer',
+                    transition: 'box-shadow 0.3s',
+                    maxHeight: '500px'
+                  }}
                   onClick={() => setExpandedImage(generatedImages[activeTab])}
-                  style={{ maxHeight: '500px' }}
+                  onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
                 />
                 <button
                   onClick={() => setExpandedImage(generatedImages[activeTab])}
-                  className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-semibold"
+                  style={{
+                    marginTop: '1rem',
+                    padding: '0.5rem 1.5rem',
+                    backgroundColor: '#2563eb',
+                    color: '#ffffff',
+                    borderRadius: '0.375rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '0.875rem',
+                    transition: 'background-color 0.3s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
                 >
                   🔍 View Full Size
                 </button>
@@ -585,11 +711,25 @@ export default function ResultsPage() {
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-4 flex-wrap">
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
             {isPlaying ? (
               <button
                 onClick={stopAudio}
-                className="btn-primary flex items-center gap-2"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#2563eb',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '0.375rem',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  transition: 'background-color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
               >
                 ⏹️ Stop Reading
               </button>
@@ -597,7 +737,22 @@ export default function ResultsPage() {
               <button
                 onClick={generateAudio}
                 disabled={loadingAudio}
-                className="btn-primary flex items-center gap-2"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  padding: '0.75rem 1rem',
+                  backgroundColor: loadingAudio ? '#9ca3af' : '#2563eb',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '0.375rem',
+                  cursor: loadingAudio ? 'not-allowed' : 'pointer',
+                  fontWeight: '600',
+                  transition: 'background-color 0.3s',
+                  opacity: loadingAudio ? '0.5' : '1'
+                }}
+                onMouseEnter={(e) => !loadingAudio && (e.currentTarget.style.backgroundColor = '#1d4ed8')}
+                onMouseLeave={(e) => !loadingAudio && (e.currentTarget.style.backgroundColor = '#2563eb')}
               >
                 🔊 {loadingAudio ? 'Generating...' : 'Read Aloud'}
               </button>
@@ -605,43 +760,123 @@ export default function ResultsPage() {
             <button
               onClick={generateImage}
               disabled={loadingImage}
-              className="btn-secondary flex items-center gap-2"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: loadingImage ? '#9ca3af' : isDark ? '#334155' : '#e5e7eb',
+                color: isDark ? '#ffffff' : '#000000',
+                border: `1px solid ${isDark ? '#475569' : '#d1d5db'}`,
+                borderRadius: '0.375rem',
+                cursor: loadingImage ? 'not-allowed' : 'pointer',
+                fontWeight: '600',
+                transition: 'background-color 0.3s',
+                opacity: loadingImage ? '0.5' : '1'
+              }}
+              onMouseEnter={(e) => !loadingImage && (e.currentTarget.style.backgroundColor = isDark ? '#475569' : '#d1d5db')}
+              onMouseLeave={(e) => !loadingImage && (e.currentTarget.style.backgroundColor = isDark ? '#334155' : '#e5e7eb')}
             >
               🖼️ {loadingImage ? 'Generating...' : 'Generate Image'}
             </button>
             <button
               onClick={regeneratePlan}
               disabled={regenerating}
-              className="btn-secondary flex items-center gap-2"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: regenerating ? '#9ca3af' : isDark ? '#334155' : '#e5e7eb',
+                color: isDark ? '#ffffff' : '#000000',
+                border: `1px solid ${isDark ? '#475569' : '#d1d5db'}`,
+                borderRadius: '0.375rem',
+                cursor: regenerating ? 'not-allowed' : 'pointer',
+                fontWeight: '600',
+                transition: 'background-color 0.3s',
+                opacity: regenerating ? '0.5' : '1'
+              }}
+              onMouseEnter={(e) => !regenerating && (e.currentTarget.style.backgroundColor = isDark ? '#475569' : '#d1d5db')}
+              onMouseLeave={(e) => !regenerating && (e.currentTarget.style.backgroundColor = isDark ? '#334155' : '#e5e7eb')}
             >
               🔄 {regenerating ? 'Regenerating...' : 'Regenerate Plan'}
             </button>
             <button
               onClick={exportAsPDF}
-              className="btn-outline flex items-center gap-2"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: 'transparent',
+                color: isDark ? '#ffffff' : '#000000',
+                border: `1px solid ${isDark ? '#475569' : '#d1d5db'}`,
+                borderRadius: '0.375rem',
+                cursor: 'pointer',
+                fontWeight: '600',
+                transition: 'background-color 0.3s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? '#1e293b' : '#f3f4f6'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               📄 Export as PDF
             </button>
           </div>
         </div>
       </div>
+      </div>
 
       {/* Image Modal */}
       {expandedImage && (
         <div
-          className="fixed inset-0 bg-black/80 dark:bg-black/90 flex items-center justify-center z-50 p-4"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 50,
+            padding: '1rem',
+            cursor: 'pointer'
+          }}
           onClick={() => setExpandedImage(null)}
         >
           <div
-            className="bg-white dark:bg-slate-800 rounded-lg shadow-2xl max-w-5xl max-h-[90vh] overflow-auto flex flex-col items-center justify-center"
+            style={{
+              backgroundColor: isDark ? '#1e293b' : '#ffffff',
+              borderRadius: '0.5rem',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              maxWidth: '56rem',
+              maxHeight: '90vh',
+              overflow: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'auto'
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="p-6 w-full">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-primary">Full Size Image</h2>
+            <div style={{ padding: '1.5rem', width: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2563eb' }}>Full Size Image</h2>
                 <button
                   onClick={() => setExpandedImage(null)}
-                  className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-2xl font-bold"
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    color: isDark ? '#cbd5e1' : '#6b7280',
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'color 0.3s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = isDark ? '#e2e8f0' : '#374151'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = isDark ? '#cbd5e1' : '#6b7280'}
                 >
                   ✕
                 </button>
@@ -649,11 +884,24 @@ export default function ResultsPage() {
               <img
                 src={expandedImage}
                 alt="Full size generated"
-                className="w-full h-auto rounded-lg object-contain max-h-[75vh]"
+                style={{ width: '100%', height: 'auto', borderRadius: '0.375rem', objectFit: 'contain', maxHeight: '75vh' }}
               />
               <button
                 onClick={() => setExpandedImage(null)}
-                className="mt-6 w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+                style={{
+                  marginTop: '1.5rem',
+                  width: '100%',
+                  padding: '0.75rem 1.5rem',
+                  backgroundColor: '#2563eb',
+                  color: '#ffffff',
+                  borderRadius: '0.375rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  transition: 'background-color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1d4ed8'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2563eb'}
               >
                 Close
               </button>
