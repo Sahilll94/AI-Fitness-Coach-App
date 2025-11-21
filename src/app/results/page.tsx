@@ -181,108 +181,249 @@ export default function ResultsPage() {
     if (!plan) return;
 
     const doc = new jsPDF();
-    let yPosition = 15;
+    let yPosition = 25;
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 15;
+    const margin = 25;
+    const bottomMargin = 25;
     const contentWidth = pageWidth - 2 * margin;
 
     const addNewPageIfNeeded = (requiredSpace: number) => {
-      if (yPosition + requiredSpace > pageHeight - 10) {
+      if (yPosition + requiredSpace > pageHeight - bottomMargin) {
         doc.addPage();
-        yPosition = 15;
+        yPosition = 25;
       }
     };
 
-    // Title
-    doc.setFontSize(22);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Your Personalized Fitness Plan', margin, yPosition);
+    const addSectionHeader = (title: string, yPos: number) => {
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.8);
+      doc.line(margin, yPos - 8, pageWidth - margin, yPos - 8);
+      
+      doc.setFontSize(14);
+      doc.setFont('times', 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text(title, margin, yPos);
+      return yPos + 10;
+    };
+
+    doc.setFontSize(28);
+    doc.setFont('times', 'bold');
+    doc.setTextColor(0, 0, 0);
+    doc.text('PERSONALIZED FITNESS PLAN', margin, yPosition);
     yPosition += 12;
 
-    // User Profile Section
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('User Profile', margin, yPosition);
-    yPosition += 8;
-
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    doc.text(`Name: ${plan.userProfile.name}`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Age: ${plan.userProfile.age} | Gender: ${plan.userProfile.gender}`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Height: ${plan.userProfile.height}cm | Weight: ${plan.userProfile.weight}kg`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Fitness Goal: ${plan.userProfile.fitnessGoal}`, margin, yPosition);
-    yPosition += 5;
-    doc.text(`Fitness Level: ${plan.userProfile.fitnessLevel}`, margin, yPosition);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(80, 80, 80);
+    const subtitleLines = doc.splitTextToSize('AI-Generated Customized Fitness & Nutrition Program', contentWidth);
+    doc.text(subtitleLines, margin, yPosition);
+    yPosition += subtitleLines.length * 4 + 3;
+
+    // Decorative line
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(1);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 10;
 
-    // Workout Plan Section
-    addNewPageIfNeeded(40);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Workout Plan', margin, yPosition);
-    yPosition += 8;
+    // User Profile Section
+    yPosition = addSectionHeader('CLIENT PROFILE', yPosition);
+    
+    doc.setFontSize(10);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(0, 0, 0);
+    
+    const profileData = [
+      [`Name:`, `${plan.userProfile.name}`],
+      [`Age:`, `${plan.userProfile.age} years old`],
+      [`Gender:`, `${plan.userProfile.gender}`],
+      [`Height:`, `${plan.userProfile.height} cm`],
+      [`Weight:`, `${plan.userProfile.weight} kg`],
+      [`Fitness Goal:`, `${plan.userProfile.fitnessGoal}`],
+      [`Experience Level:`, `${plan.userProfile.fitnessLevel}`],
+      [`Workout Location:`, `${plan.userProfile.workoutLocation || 'Not specified'}`],
+    ];
 
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    const workoutLines = doc.splitTextToSize(plan.workoutPlan, contentWidth);
+    profileData.forEach(([label, value]) => {
+      doc.setFont('times', 'bold');
+      doc.text(label, margin, yPosition);
+      doc.setFont('times', 'normal');
+      const valueLines = doc.splitTextToSize(value, contentWidth - 55);
+      doc.text(valueLines, margin + 50, yPosition);
+      yPosition += Math.max(6, valueLines.length * 5);
+    });
+
+    yPosition += 5;
+
+    // Workout Plan Section
+    addNewPageIfNeeded(100);
+    yPosition = addSectionHeader('WORKOUT PLAN', yPosition);
+    
+    doc.setFontSize(9.5);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(0, 0, 0);
+    
+    // Process workout plan to convert asterisks to bullet points
+    const workoutPlanProcessed = plan.workoutPlan
+      .split('\n')
+      .map((line: string) => {
+        // Replace asterisks at the start of lines with proper bullet symbol
+        if (line.trim().startsWith('*')) {
+          return '• ' + line.trim().substring(1).trim();
+        }
+        return line;
+      })
+      .join('\n');
+    
+    const workoutLines = doc.splitTextToSize(workoutPlanProcessed, contentWidth - 5);
     doc.text(workoutLines, margin, yPosition);
-    yPosition += workoutLines.length * 4.5 + 8;
+    yPosition += workoutLines.length * 4.3 + 8;
 
     // Diet Plan Section
-    addNewPageIfNeeded(40);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Diet Plan', margin, yPosition);
-    yPosition += 8;
-
-    doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    const dietLines = doc.splitTextToSize(plan.dietPlan, contentWidth);
+    addNewPageIfNeeded(100);
+    yPosition = addSectionHeader('NUTRITIONAL PLAN', yPosition);
+    
+    doc.setFontSize(9.5);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(0, 0, 0);
+    
+    // Process diet plan to convert asterisks to bullet points
+    const dietPlanProcessed = plan.dietPlan
+      .split('\n')
+      .map((line: string) => {
+        if (line.trim().startsWith('*')) {
+          return '• ' + line.trim().substring(1).trim();
+        }
+        return line;
+      })
+      .join('\n');
+    
+    const dietLines = doc.splitTextToSize(dietPlanProcessed, contentWidth - 5);
     doc.text(dietLines, margin, yPosition);
-    yPosition += dietLines.length * 4.5 + 8;
+    yPosition += dietLines.length * 4.3 + 8;
 
     // Fitness Tips Section
-    addNewPageIfNeeded(40);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Fitness Tips', margin, yPosition);
+    addNewPageIfNeeded(100);
+    yPosition = addSectionHeader('HEALTH & FITNESS RECOMMENDATIONS', yPosition);
+    
+    doc.setFontSize(9.5);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(0, 0, 0);
+    
+    // Process tips to convert asterisks to bullet points
+    const tipsProcessed = plan.tips
+      .split('\n')
+      .map((line: string) => {
+        if (line.trim().startsWith('*')) {
+          return '• ' + line.trim().substring(1).trim();
+        }
+        return line;
+      })
+      .join('\n');
+    
+    const tipLines = doc.splitTextToSize(tipsProcessed, contentWidth - 5);
+    doc.text(tipLines, margin, yPosition);
+    yPosition += tipLines.length * 4.3 + 8;
+
+    // Motivational Quote Section
+    addNewPageIfNeeded(50);
+    yPosition = addSectionHeader('MOTIVATION', yPosition);
+    
+    doc.setFontSize(11);
+    doc.setFont('times', 'italic');
+    doc.setTextColor(40, 40, 40);
+    
+    const cleanQuote = plan.motivationalQuote
+      .replace(/^"|"$/g, '')
+      .replace(/^\*\*|^\*|^""|^""/, '')
+      .replace(/\*\*$|\*$|""$|""$/, '')
+      .trim();
+    
+    const quoteLines = doc.splitTextToSize(`"${cleanQuote}"`, contentWidth - 15);
+    doc.text(quoteLines, margin + 10, yPosition);
+    yPosition += quoteLines.length * 4.5 + 10;
+
+    // Add new page for footer/credits if needed
+    addNewPageIfNeeded(70);
+    
+    // Decorative separator line
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(1);
+    doc.line(margin, yPosition, pageWidth - margin, yPosition);
+    yPosition += 12;
+
+    // Developer Section - Professional style
+    doc.setFontSize(9);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.text('Document Generated By', margin, yPosition);
+    yPosition += 6;
+
+    doc.setFontSize(11);
+    doc.setFont('times', 'bold');
+    doc.text('AI Fitness Coach', margin, yPosition);
     yPosition += 8;
 
     doc.setFontSize(9);
-    doc.setFont('helvetica', 'normal');
-    const tipLines = doc.splitTextToSize(plan.tips, contentWidth);
-    doc.text(tipLines, margin, yPosition);
-    yPosition += tipLines.length * 4.5 + 8;
-
-    // Motivational Quote Section
-    addNewPageIfNeeded(30);
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Motivational Quote', margin, yPosition);
-    yPosition += 8;
-
-    doc.setFontSize(11);
-    doc.setFont('helvetica', 'italic');
-    doc.setTextColor(70, 130, 180); // Steel blue color
-    const quoteLines = doc.splitTextToSize(`"${plan.motivationalQuote.replace(/^"|"$/g, '')}"`, contentWidth);
-    doc.text(quoteLines, margin, yPosition);
-    
-    // Reset text color
+    doc.setFont('times', 'normal');
     doc.setTextColor(0, 0, 0);
+    doc.text('Developed by: Sahil', margin, yPosition);
+    yPosition += 6;
 
-    // Footer with date
+    // Portfolio link with hyperlink
+    doc.setTextColor(0, 0, 255); // Blue for links
+    doc.setFont('times', 'normal');
+    doc.textWithLink('Portfolio: sahilfolio.live', margin, yPosition, { 
+      url: 'https://sahilfolio.live',
+    });
+    doc.setTextColor(0, 0, 0); // Reset to black
+    yPosition += 6;
+
+    // GitHub link with hyperlink - wrapped to fit page
+    doc.setTextColor(0, 0, 255); // Blue for links
+    const githubText = 'Repository: github.com/Sahilll94/AI-Fitness-Coach-App';
+    const githubLines = doc.splitTextToSize(githubText, contentWidth - 5);
+    doc.textWithLink(githubLines[0], margin, yPosition, {
+      url: 'https://github.com/Sahilll94/AI-Fitness-Coach-App',
+    });
+    if (githubLines.length > 1) {
+      doc.setTextColor(0, 0, 0);
+      doc.text(githubLines.slice(1), margin, yPosition + 5);
+    }
+    doc.setTextColor(0, 0, 0); // Reset to black
+    yPosition += githubLines.length * 5 + 5;
+
     doc.setFontSize(8);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(150, 150, 150);
-    const footerText = `Generated on ${new Date().toLocaleDateString()}`;
-    doc.text(footerText, margin, pageHeight - 8);
+    doc.setFont('times', 'normal');
+    doc.setTextColor(80, 80, 80);
+    const taglineLines = doc.splitTextToSize('Powered by Advanced AI Technology', contentWidth);
+    doc.text(taglineLines, margin, yPosition);
+    yPosition += taglineLines.length * 4 + 2;
+
+    const disclaimerLines = doc.splitTextToSize('This plan is personalized based on your profile and fitness goals.', contentWidth);
+    doc.text(disclaimerLines, margin, yPosition);
+
+    // Footer with timestamp and page numbers - Professional style
+    const pageCount = doc.internal.pages.length - 1;
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setFont('times', 'normal');
+      doc.setTextColor(100, 100, 100);
+      
+      const date = new Date();
+      const dateStr = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      const footerText = `Document generated on ${dateStr} | Page ${i} of ${pageCount}`;
+      doc.text(footerText, margin, pageHeight - bottomMargin + 8);
+    }
 
     // Save
-    doc.save(`fitness-plan-${plan.userProfile.name}-${new Date().getTime()}.pdf`);
+    doc.save(`Fitness_Plan_${plan.userProfile.name.replace(/\s+/g, '_')}_${new Date().getTime()}.pdf`);
   };
 
   if (!plan) {
